@@ -34,8 +34,8 @@ func search(nums []int, target int) int {
 	return tail
 }
 
-func main() {
+/*func main() {
 	nums := []int{-1, 0, 3, 5, 9, 12}
 	n := search(nums, 2)
 	fmt.Println(n)
-}
+}*/
