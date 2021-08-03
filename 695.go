@@ -31,3 +31,45 @@ func max(x, y int) int {
 	}
 	return y
 }
+
+func maxAreaOfIsland2(grid [][]int) (result int) {
+	n := len(grid)
+	if n == 0 {
+		return 0
+	}
+	m := len(grid[0])
+	if m == 0 {
+		return 0
+	}
+	var bfs func(i, j int) int
+	bfs = func(i, j int) (count int) {
+		arr := [][2]int{{i, j}}
+		for len(arr) != 0 {
+			a, b := arr[0][0], arr[0][1]
+			arr = arr[1:]
+			if a >= 0 && a < n && b >= 0 && b < m && grid[a][b] == 1 {
+				count++
+				grid[a][b] = 0
+				arr = append(arr, [][2]int{{a - 1, b}, {a, b - 1}, {a + 1, b}, {a, b + 1}}...)
+			}
+		}
+		return
+	}
+	for i := range grid {
+		for j := range grid[0] {
+			result = Max(result, bfs(i, j))
+		}
+	}
+	return
+}
+
+//Max return the maximum number
+func Max(a ...int) int {
+	max := a[0]
+	for _, v := range a[1:] {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
