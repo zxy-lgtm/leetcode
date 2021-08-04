@@ -36,3 +36,21 @@ func connect(root *Node) *Node {
 
 	return root
 }
+
+func connect2(root *Node) *Node {
+	if root == nil {
+		return root
+	}
+
+	for leftmost := root; leftmost.Left != nil; leftmost = leftmost.Left {
+		for node := leftmost; node != nil; node = node.Next {
+			node.Left.Next = node.Right
+
+			if node.Next != nil {
+				node.Right.Next = node.Next.Left
+			}
+		}
+	}
+
+	return root
+}
