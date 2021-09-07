@@ -1,3 +1,7 @@
+package leetcode
+
+import "strings"
+
 func convert(s string, numRows int) string {
 	if numRows == 1 {
 		return s
