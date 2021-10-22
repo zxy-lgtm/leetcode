@@ -59,3 +59,20 @@ func First(node *TreeNode, min []int) {
 	First(node.Right, min)
 
 }
+
+// 官方方法1 通过中序遍历找到第 kk 个最小元素
+func kthSmallest1(root *TreeNode, k int) int {
+    stack := []*TreeNode{}
+    for {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+        stack, root = stack[:len(stack)-1], stack[len(stack)-1]
+        k--
+        if k == 0 {
+            return root.Val
+        }
+        root = root.Right
+    }
+}
