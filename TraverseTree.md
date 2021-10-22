@@ -7,9 +7,7 @@
 ```go
 func preorderTraversal(root *TreeNode) (res []int) {
     
-	var traversal func(node *TreeNode)
-    
-	traversal = func(node *TreeNode) {
+	traversal := func(node *TreeNode) {
 		if node == nil {
 			return
 		}
@@ -32,9 +30,7 @@ func preorderTraversal(root *TreeNode) (res []int) {
 ```go
 func inorderTraversal(root *TreeNode) (res []int) {
     
-	var traversal func(node *TreeNode)
-    
-	traversal = func(node *TreeNode) {
+	traversal := func(node *TreeNode) {
 		if node == nil {
 			return
 		}
@@ -57,9 +53,7 @@ func inorderTraversal(root *TreeNode) (res []int) {
 ```go
 func postorderTraversal(root *TreeNode) (res []int) {
 
-	var traversal func(node *TreeNode)
-
-	traversal = func(node *TreeNode) {
+	traversal := func(node *TreeNode) {
 		if node == nil {
 			return
 		}
