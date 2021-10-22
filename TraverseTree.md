@@ -1,8 +1,8 @@
-**## 二叉树的三种深度优先遍历**
+## 二叉树的三种深度优先遍历
 
 **--递归实现 --**
 
-**### 前序遍历**
+### 前序遍历
 
 ```go
 func preorderTraversal(root *TreeNode) (res []int) {
@@ -48,7 +48,7 @@ func inorderTraversal(root *TreeNode) (res []int) {
 
 
 
-后序遍历
+### 后序遍历
 
 ```go
 func postorderTraversal(root *TreeNode) (res []int) {
