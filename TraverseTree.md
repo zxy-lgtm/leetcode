@@ -192,3 +192,40 @@ func inorderTraversal(root *TreeNode)(res []int) {
 }
 
 ```
+
+
+## 二叉树的广度优先遍历
+
+**--利用队列实现--**
+
+### 层序遍历
+
+```go
+
+func levelOrder(root *TreeNode) (res [][]int) {
+	if root == nil {
+		return
+	}
+
+	queue := list.New()
+	queue.PushBack(root)
+	var tmpArr []int
+	for queue.Len() != 0 {
+		len := queue.Len()
+		for i := 0; i < len; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+			tmpArr = append(tmpArr, node.Val)
+		}
+		res = append(res, tmpArr)
+		tmpArr = []int{}
+	}
+	return
+}
+
+```
