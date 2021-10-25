@@ -263,3 +263,37 @@ func levelOrder(root *Node) (res [][]int) {
 }
 
 ```
+
+## 回溯:二叉树的所有路径
+
+**--要把路径记录下来，需要回溯来回退一一个路径在进入另一个路径--**
+
+```go
+func binaryTreePaths(root *TreeNode) (res []string) {
+	if root == nil {
+		return
+	}
+
+	var travel func(node *TreeNode, s string)
+	travel = func(node *TreeNode, s string) {
+		if node.Left == nil && node.Right == nil {
+			v := s + strconv.Itoa(node.Val)
+			res = append(res, v)
+			return
+		}
+
+		s = s + strconv.Itoa(node.Val) + "->"
+		if node.Left != nil {
+			travel(node.Left, s)
+		}
+
+		if node.Right != nil {
+			travel(node.Right, s)
+		}
+	}
+
+	travel(root, "")
+	return
+}
+
+```
