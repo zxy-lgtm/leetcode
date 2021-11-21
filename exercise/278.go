@@ -1,4 +1,4 @@
-package main
+package leetcode
 
 func isBadVersion(version int) bool
 

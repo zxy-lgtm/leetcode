@@ -25,6 +25,24 @@ func preorderTraversal(root *TreeNode) (res []int) {
 
 ```
 
+#### 寻找所有左叶子(通过节点的父节点判断本节点的属性)
+
+```go
+
+func sumOfLeftLeaves(root *TreeNode) (total int) {
+	if root == nil {
+		return
+	}
+	if root.Left != nil && root.Left.Left == nil && root.Left.Right == nil {
+		total += root.Left.Val
+	}
+	total += sumOfLeftLeaves(root.Left)
+	total += sumOfLeftLeaves(root.Right)
+
+	return
+}
+
+```
 
 
 ### 中序遍历
