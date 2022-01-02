@@ -23,7 +23,31 @@ func main() {
 	nums := [][]int{{2, 4}, {1, 4}}
 
 	sort.Sort(sortable(nums))
-	fmt.Println(nums)
+	s := "abcd"
+	fmt.Println(compare(s[0:3], "acb"))
+	//fmt.Println(nums)
+}
+
+func compare(s string, p string) bool {
+	m := make(map[rune]int)
+
+	for _, k := range s {
+		m[k]++
+	}
+	for _, k := range p {
+		if _, ok := m[k]; !ok {
+			return false
+		}
+		m[k]--
+	}
+
+	for _, k := range m {
+		if k != 0 {
+			return false
+		}
+	}
+
+	return true
 }
 
 func getIndex(nums []int, target int) int {
