@@ -73,3 +73,38 @@ func Max(a ...int) int {
 	}
 	return max
 }
+
+// rewrite
+func maxAreaOfIsland_(grid [][]int) int {
+	max := 0
+	for i, nums := range grid {
+		for j, k := range nums {
+			if k == 1 {
+				area := dfs_(grid, i, j)
+				if area > max {
+					max = area
+				}
+			}
+		}
+	}
+	return max
+}
+
+func dfs_(grid [][]int, r int, c int) int {
+	if ok := inarea(grid, r, c); !ok {
+		return 0
+	}
+	if grid[r][c] != 1 {
+		return 0
+	}
+	grid[r][c]++
+
+	return 1 + dfs_(grid, r-1, c) + dfs_(grid, r+1, c) + dfs_(grid, r, c-1) + dfs_(grid, r, c+1)
+}
+
+func inarea(grid [][]int, r int, c int) bool {
+	if r >= len(grid) || c >= len(grid[0]) || r < 0 || c < 0 {
+		return false
+	}
+	return true
+}
