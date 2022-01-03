@@ -6,7 +6,6 @@ func findAnagrams(s string, p string) (res []int) {
 	if l < lp {
 		return
 	}
-
 	var S, P [26]int
 
 	for i, k := range p {

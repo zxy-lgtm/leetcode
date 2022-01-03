@@ -24,8 +24,18 @@ func main() {
 
 	sort.Sort(sortable(nums))
 	s := "abcd"
-	fmt.Println(compare(s[0:3], "acb"))
+	fmt.Println(compare_(s[0:4]))
+	//fmt.Println(compare(s[0:3], "acb"))
 	//fmt.Println(nums)
+}
+
+func compare_(s string) bool {
+	for i := 0; i < len(s)/2; i++ {
+		if s[i] != s[len(s)-i-1] {
+			return false
+		}
+	}
+	return true
 }
 
 func compare(s string, p string) bool {
