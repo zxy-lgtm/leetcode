@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 type sortable [][]int
@@ -23,10 +24,16 @@ func main() {
 	nums := [][]int{{2, 4}, {1, 4}}
 
 	sort.Sort(sortable(nums))
-	s := "abcd"
-	fmt.Println(compare_(s[0:4]))
+	s := "as bs c d"
+	m := make(map[int]byte)
+	ok := m[0]
+	fmt.Println(ok == 1)
+	//fmt.Println(compare_(s[0:4]))
 	//fmt.Println(compare(s[0:3], "acb"))
 	//fmt.Println(nums)
+	d := strings.Split(s, " ")
+	fmt.Println(d)
+
 }
 
 func compare_(s string) bool {
