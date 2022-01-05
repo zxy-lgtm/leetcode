@@ -24,7 +24,7 @@ func main() {
 	nums := [][]int{{2, 4}, {1, 4}}
 
 	sort.Sort(sortable(nums))
-	s := "as bs c d"
+	s := "asbscdds"
 	m := make(map[int]byte)
 	ok := m[0]
 	fmt.Println(ok == 1)
@@ -33,6 +33,9 @@ func main() {
 	//fmt.Println(nums)
 	d := strings.Split(s, " ")
 	fmt.Println(d)
+	f := []byte(s)
+	sort.Slice(f, func(i, j int) bool { return f[i] < f[j] })
+	fmt.Println(string(f))
 
 }
 
