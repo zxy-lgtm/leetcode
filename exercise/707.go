@@ -170,3 +170,73 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 	}
 
 }
+
+type node_ struct {
+	data int
+	next *node_
+}
+
+type MyLinkedList_ struct {
+	head *node_
+	len  int
+}
+
+func Constructor_() (res MyLinkedList_) {
+	n := &node_{0, nil}
+	res.head = n
+	res.len = 0
+	return
+}
+
+func (this *MyLinkedList_) Get(index int) int {
+	if index+1 > this.len {
+		return -1
+	}
+	tmp := this.head.next
+	for i := 0; i < index; i++ {
+		tmp = tmp.next
+	}
+	return tmp.data
+}
+
+func (this *MyLinkedList_) AddAtHead(val int) {
+	n := &node_{val, nil}
+	n.next = this.head.next
+	this.head.next = n
+	this.len++
+}
+
+func (this *MyLinkedList_) AddAtTail(val int) {
+	n := &node_{val, nil}
+	tmp := this.head
+	for tmp.next != nil {
+		tmp = tmp.next
+	}
+	tmp.next = n
+	this.len++
+}
+
+func (this *MyLinkedList_) AddAtIndex(index int, val int) {
+	if index > this.len {
+		return
+	}
+	tmp := this.head
+	for i := 0; i < index; i++ {
+		tmp = tmp.next
+	}
+	n := &node_{val, tmp.next}
+	tmp.next = n
+	this.len++
+}
+
+func (this *MyLinkedList_) DeleteAtIndex(index int) {
+	if index+1 > this.len {
+		return
+	}
+	tmp := this.head
+	for i := 0; i < index; i++ {
+		tmp = tmp.next
+	}
+	tmp.next = tmp.next.next
+	this.len--
+}

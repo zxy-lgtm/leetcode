@@ -1,10 +1,85 @@
 package main
 
-import (
-	"fmt"
-	"sort"
-	"strings"
-)
+import "fmt"
+
+type node struct {
+	data int
+	next *node
+}
+
+type MyLinkedList struct {
+	head *node
+	len  int
+}
+
+func Constructor() (res MyLinkedList) {
+	n := &node{0, nil}
+	res.head = n
+	res.len = 0
+	return
+}
+
+func (this *MyLinkedList) Get(index int) int {
+	if index+1 > this.len {
+		return -1
+	}
+	tmp := this.head
+	for i := 0; i < index; i++ {
+		tmp = tmp.next
+	}
+	return tmp.data
+}
+
+func (this *MyLinkedList) Print() {
+	tmp := this.head
+	for i := 0; i < this.len; i++ {
+		tmp = tmp.next
+		fmt.Println(tmp.data)
+	}
+	return
+}
+
+func (this *MyLinkedList) AddAtHead(val int) {
+	n := &node{val, nil}
+	n.next = this.head.next
+	this.head.next = n
+	this.len++
+}
+
+func (this *MyLinkedList) AddAtTail(val int) {
+	n := &node{val, nil}
+	tmp := this.head
+	for tmp.next != nil {
+		tmp = tmp.next
+	}
+	tmp.next = n
+	this.len++
+}
+
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+	if index > this.len {
+		return
+	}
+	tmp := this.head
+	for i := 0; i < index; i++ {
+		tmp = tmp.next
+	}
+	n := &node{val, tmp.next}
+	tmp.next = n
+	this.len++
+}
+
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	if index > this.len {
+		return
+	}
+	tmp := this.head
+	for i := 0; i < index-1; i++ {
+		tmp = tmp.next
+	}
+	tmp.next = tmp.next.next
+	this.len--
+}
 
 type sortable [][]int
 
@@ -21,7 +96,7 @@ func (s sortable) Swap(i, j int) {
 }
 
 func main() {
-	nums := [][]int{{2, 4}, {1, 4}}
+	/*nums := [][]int{{2, 4}, {1, 4}}
 
 	sort.Sort(sortable(nums))
 	s := "asbscdds"
@@ -35,8 +110,14 @@ func main() {
 	fmt.Println(d)
 	f := []byte(s)
 	sort.Slice(f, func(i, j int) bool { return f[i] < f[j] })
-	fmt.Println(string(f))
-
+	fmt.Println(string(f))*/
+	l := Constructor()
+	l.AddAtTail(5)
+	l.AddAtIndex(1, 6)
+	fmt.Println(l.Get(2))
+	l.Print()
+	l.DeleteAtIndex(0)
+	l.Print()
 }
 
 func compare_(s string) bool {
