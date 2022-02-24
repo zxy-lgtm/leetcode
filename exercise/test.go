@@ -32,6 +32,7 @@ func AllRange(list []int, start, end int) {
 }
 
 func main() {
-	list := [6]int{1, 1, 1, 0, 0, 0}
-	AllRange(list[:], 0, len(list)-1)
+	//list := [6]int{1, 1, 1, 0, 0, 0}
+	//AllRange(list[:], 0, len(list)-1)
+
 }
