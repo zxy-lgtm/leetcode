@@ -43,3 +43,13 @@ func middleNode2(head *ListNode) *ListNode {
 	}
 	return head
 }
+
+func middleNode_(head *ListNode) *ListNode {
+	fast, late := head, head
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		late = late.Next
+	}
+
+	return late
+}
