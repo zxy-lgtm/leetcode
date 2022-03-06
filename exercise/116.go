@@ -54,3 +54,26 @@ func connect2(root *Node) *Node {
 
 	return root
 }
+
+func connect3(root *Node) *Node {
+	if root == nil {
+		return root
+	}
+	connecthelp(root.Left, root.Right)
+
+	return root
+}
+
+func connecthelp(node1, node2 *Node) {
+	if node1 == nil || node2 == nil {
+		return
+	}
+
+	node1.Next = node2
+
+	connecthelp(node1.Left, node1.Right)
+	connecthelp(node1.Right, node2.Left)
+	connecthelp(node2.Left, node2.Right)
+
+	return
+}
