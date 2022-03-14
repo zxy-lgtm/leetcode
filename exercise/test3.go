@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 type node struct {
 	data int
@@ -81,14 +84,14 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 	this.len--
 }
 
-type sortable [][]int
+type sortable []int
 
 func (s sortable) Len() int {
 	return len(s)
 }
 
 func (s sortable) Less(i, j int) bool {
-	return s[i][0] < s[j][0]
+	return s[i] < s[j]
 }
 
 func (s sortable) Swap(i, j int) {
@@ -96,6 +99,9 @@ func (s sortable) Swap(i, j int) {
 }
 
 func main() {
+	nums := []int{1, 2, 4, 3}
+	sort.Sort(sortable(nums))
+	fmt.Println(nums)
 	/*nums := [][]int{{2, 4}, {1, 4}}
 
 	sort.Sort(sortable(nums))
@@ -110,14 +116,14 @@ func main() {
 	fmt.Println(d)
 	f := []byte(s)
 	sort.Slice(f, func(i, j int) bool { return f[i] < f[j] })
-	fmt.Println(string(f))*/
+	fmt.Println(string(f))
 	l := Constructor()
 	l.AddAtTail(5)
 	l.AddAtIndex(1, 6)
 	fmt.Println(l.Get(2))
 	l.Print()
 	l.DeleteAtIndex(0)
-	l.Print()
+	l.Print()*/
 }
 
 func compare_(s string) bool {
