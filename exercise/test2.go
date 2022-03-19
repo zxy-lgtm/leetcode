@@ -33,7 +33,12 @@ func canArrange(arr []int, k int) bool {
 }
 
 func main() {
-	arr := []int{1, 0, 2, 3, 5, 6, 0, 0, 0, 2}
-	ok := canArrange(arr[:], 2)
-	fmt.Println(ok)
+	//arr := []int{1, 0, 2, 3, 5, 6, 0, 0, 0, 2}
+	//ok := canArrange(arr[:], 2)
+	num1, num2 := 1, 2
+	num1, num2 = num2+1, num1+1
+	num3, num4 := 1, 2
+	num3 = num4 + 1
+	num4 = num3 + 1
+	fmt.Println(num1, num2, num3, num4)
 }
