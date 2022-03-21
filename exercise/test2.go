@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+)
 
 func canArrange(arr []int, k int) bool {
 	m := make(map[int]int)
@@ -30,6 +33,18 @@ func canArrange(arr []int, k int) bool {
 	}
 
 	return true
+}
+
+func trap(height []int) int {
+	s := list.New()
+	all := 0
+	for i := 0; i < len(height)-1; i++ {
+		if height[i] < height[i+1] {
+			s.PushBack(height[i])
+		}
+
+	}
+
 }
 
 func main() {
