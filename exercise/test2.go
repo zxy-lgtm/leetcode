@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 )
 
@@ -35,25 +34,19 @@ func canArrange(arr []int, k int) bool {
 	return true
 }
 
-func trap(height []int) int {
-	s := list.New()
-	all := 0
-	for i := 0; i < len(height)-1; i++ {
-		if height[i] < height[i+1] {
-			s.PushBack(height[i])
-		}
-
-	}
-
-}
-
 func main() {
 	//arr := []int{1, 0, 2, 3, 5, 6, 0, 0, 0, 2}
 	//ok := canArrange(arr[:], 2)
-	num1, num2 := 1, 2
+	/*num1, num2 := 1, 2
 	num1, num2 = num2+1, num1+1
 	num3, num4 := 1, 2
 	num3 = num4 + 1
 	num4 = num3 + 1
-	fmt.Println(num1, num2, num3, num4)
+	fmt.Println(num1, num2, num3, num4)*/
+	ans := make([][]int, 9)
+	ans[1] = []int{0}
+	i := []int{0, 1}
+	ans[0] = i
+	fmt.Println(ans)
+
 }
