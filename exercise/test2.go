@@ -43,10 +43,10 @@ func main() {
 	num3 = num4 + 1
 	num4 = num3 + 1
 	fmt.Println(num1, num2, num3, num4)*/
-	ans := make([][]int, 9)
-	ans[1] = []int{0}
-	i := []int{0, 1}
-	ans[0] = i
-	fmt.Println(ans)
+	ans := make([]byte, 2)
+	ans[0] = '0'
+	var num int
+	num = int(ans[0] - '0')
+	fmt.Println(num)
 
 }
