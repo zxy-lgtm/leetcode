@@ -18,5 +18,5 @@ select
 from
     Patients
 where
-    conditions rlike '^DIAB1|.*\\sDIAB1' 
+    conditions rlike '^DIAB1|.*\\sDIAB1'
 
