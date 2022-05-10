@@ -530,27 +530,180 @@ hello
 
   ```c
   // 8.5作业
-  void snooze(int end) {     
-      pid_t pc, pr;   
-      int curr = 0; 
-      pc=fork();     
-      if(pc<0)      
-          printf("Error occured on forking.\n");     
-      else if(pc==0)     
-      {
-          sleep(end);
-          exit(0);     
-      }         
-      do     
-      {     
-          pr=waitpid(pc, NULL, WNOHANG);
-              if(pr==0)      
-              {   
-                  printf("slept for %d of %d secs\n",++curr,end);       
-                  sleep(1);      
-              }     
-      }while(pr==0);        
+  void snooze(int end){
+      for(int i = 0; i < end;i++  ){
+          printf("slept for %d of %d secs\n",i+1,end);
+          sleep(1);
+      }
+      printf("end!");
   }
   ```
 
+#### 8.4.5 加载并运行程序
+
+* `execve`函数
+
+* 调用一次，从不返回（只有出现错误才会返回）
+
+* `argv`参数
+
+* `envp`参数->每一个都是一个`k-v`键值对
+
+* `main`函数的参数：
+
+  * `argc`:`argv[]`的非空数量
+  * `argv`：`argv[]`头指针
+  * `envp`：`envp[]`的头指针
+
+* `getenv`函数，在`envp[]`中搜索`k-v`键值对，返回指向v的指针
+
+* `setenv`函数：存在则替代，不存在则创建
+
+  ```c
+  // 8.6 作业
+  int main(int argc,char *argv[],char *envp[]){
+      printf("Command-ine arguments:\n");
+      for(int i = 0 ;argv[i]!=NULL;i++){
+          printf("argv[%2d] : %s\n",i,argv[i]);
+      }
   
+      printf("Environment variables:\n");
+      for(int i = 0;envp[i]!=NULL;i++){
+          printf("envp[%2d] : %s\n",i,envp[i]);
+      }
+  }
+  ```
+
+#### 8.4.6 利用`fork`和`execve`运行程序
+
+* 一个简单的shell实现，但是没有实现回收子进程的功能
+
+### 8.5 信号
+
+* 作用：允许进程和内核中断其他信号，通知进程系统发生了一个某种类型的事件
+* 每种事件对应不同的信号
+
+#### 8.5.1 信号术语
+
+* 两个步骤
+  * 发送信号->由内核实现（更新目的进程上下文的某种状态）
+  * 接收信号->目的进程做出相应反应（一个信号最多只能被接受一次，接收了之后内核中地该信号的对应位就会被清除）
+* 待处理信号：发送了还没被接收的信号，任何时候一种类型最多一个待处理信号，多的信号会被直接丢弃
+* 目的进程可以选择性地阻塞某个信号
+
+#### 8.5.2 发送信号
+
+* 进程组
+  * 每个进程都只属于一个进程组，默认父进程和子进程属于同一个进程组
+  * `getpgrp`函数返回当前进程组id
+  * `setpgid`函数改变进程的id，change（`pid`/第一个参数 to `pgid`/第二个参数（若为0则用`pid`作为进程组id））
+* `/bin/kill`指令发送信号
+* 从键盘发送信号
+  * 作业(job):Unix shell表示对一条命令行求值而创建的进程
+  * 前台作业，前台进程组
+  * 后台作业，后台进程组
+* `kill`函数
+  * 参数`pid`，大于0，等于0，小于0三种情况
+  * 参数`sig`（要发送的信号）
+* `alarm`函数
+  * 参数`secs`
+  * 默认信号：`SIGALRM`
+  * 默认进程：调用进程
+
+#### 8.5.3 接收信号
+
+* 进程模式切换（内核模式->用户模式）时，内核会检查进程的待处理信号集合，如果不为空则会选择一个信号强制让进程接收
+
+* 信号预定义的默认行为
+
+  * 进程终止
+  * 进程终止并转储内存
+  * 进程停止直到被重启
+  * 忽略该信号
+
+* `signal`函数可以修改信号的默认行为，信号`SIGSTOP`，`SIGKILL`不能修改
+
+  * 参数`signum`（信号）
+
+  * 参数handler：
+
+    * `SIG_IGN`->忽略
+    * `SIG_DFL`->恢复默认行为
+    * 用户自定义的函数（信号处理程序）
+
+  * 例子：
+
+    ```c
+    #include <stdio.h>
+    #include <signal.h>
+    void sigint_handler(int sig){
+    
+        printf("Caught SIGINT!\n");
+        exit(0);
+    }
+    
+    int main(){
+        if(signal(SIGINT,sigint_handler) == SIG_ERR){
+            printf("error");
+        }
+        pause();
+    
+        return 0;
+    }
+    
+    输出：
+    ^CCaught SIGINT!  
+    ```
+
+#### 8.5.4 阻塞和解除阻塞信号
+
+* 隐式阻塞
+  * 另一个信号引起的阻塞
+* 显示阻塞
+  * 使用`sigprocmask`函数和他的辅助函数来控制阻塞
+
+#### 8.5.5 编写信号处理程序
+
+* 安全的信号处理
+
+  * 处理程序要尽可能简单
+  * 在处理程序中只调用异步信号安全的函数
+  * 信号处理中唯一安全输出是`write`函数
+  * 保存和恢复`errno`，确保其他程序不会修改自己所需的`errno`
+  * 阻塞所有的信号
+  * 用`volatile`声明全局变量
+  * 用`sig_atomic_t`声明标志，这种整型数据类型的读和写保证是原子的（不可中断）
+  * 例子：
+
+  ```c
+  volatile sig_atomic_t g_flag = 0;
+  
+  void signal_handler(int signum) {
+      g_flag = 1;
+  }
+  
+  int main(void)
+  {
+      signal(SIGINT, signal_handler);
+  
+      while( !g_flag ){
+          puts( "wait" );
+          sleep(1);
+      }
+  
+      puts( "exit" );
+  }
+  ```
+
+* 正确的信号处理
+  * 未处理的信号是不排队的（多了直接丢弃）->逆向思维：如果有未处理信号存在，那么肯定有至少一个信号到达了
+  * 一定要回收僵死进程
+* 可移植的信号处理
+  * 系统调用可被中断
+  * 函数语义可能不同
+  * `sigaction`函数，过于复杂->`Signal`
+
+#### 8.5.6 同步流以避免并发错误
+
+
+
