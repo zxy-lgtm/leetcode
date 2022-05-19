@@ -1084,9 +1084,110 @@ hello
   * 无缓冲输入输出
   * 带缓冲的输入
 
-#### 10.5.1 无缓冲输入输出函数
+#### 10.5.1 无缓冲输入输出函数 
 
+* `rio_readn`函数
 
+* ```c
+  ssize_t rio_readn(int fd, void *usrbuf, size_t n) 
+  {
+      size_t nleft = n;
+      ssize_t nread;
+      char *bufp = usrbuf;
+  
+      while (nleft > 0) {
+  	if ((nread = read(fd, bufp, nleft)) < 0) {
+  	    if (errno == EINTR) /* Interrupted by sig handler return */
+  		nread = 0;      /* and call read() again */
+  	    else
+  		return -1;      /* errno set by read() */ 
+  	} 
+  	else if (nread == 0)
+  	    break;              /* EOF */
+  	nleft -= nread;
+  	bufp += nread;
+      }
+      return (n - nleft);         /* return >= 0 */
+  }
+  ```
 
+  #### 10.5.2 有缓冲的输入输出函数
 
+* `rio_read`函数
+
+  ```c
+  static ssize_t rio_read(rio_t *rp, char *usrbuf, size_t n)
+  {
+      int cnt;
+  
+      while (rp->rio_cnt <= 0) {  /* Refill if buf is empty */
+  	rp->rio_cnt = read(rp->rio_fd, rp->rio_buf, 
+  			   sizeof(rp->rio_buf));
+  	if (rp->rio_cnt < 0) {
+  	    if (errno != EINTR) /* Interrupted by sig handler return */
+  		return -1;
+  	}
+  	else if (rp->rio_cnt == 0)  /* EOF */
+  	    return 0;
+  	else 
+  	    rp->rio_bufptr = rp->rio_buf; /* Reset buffer ptr */
+      }
+  
+      /* Copy min(n, rp->rio_cnt) bytes from internal buf to user buf */
+      cnt = n;          
+      if (rp->rio_cnt < n)   
+  	cnt = rp->rio_cnt;
+      memcpy(usrbuf, rp->rio_bufptr, cnt);
+      rp->rio_bufptr += cnt;
+      rp->rio_cnt -= cnt;
+      return cnt;
+  }
+  ```
+
+* `rio_readlineb`函数
+
+  ```c
+  ssize_t rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen) 
+  {
+      int n, rc;
+      char c, *bufp = usrbuf;
+  
+      for (n = 1; n < maxlen; n++) { 
+          if ((rc = rio_read(rp, &c, 1)) == 1) {
+  	    *bufp++ = c;
+  	    if (c == '\n') {
+                  n++;
+       		break;
+              }
+  	} else if (rc == 0) {
+  	    if (n == 1)
+  		return 0; /* EOF, no data read */
+  	    else
+  		break;    /* EOF, some data was read */
+  	} else
+  	    return -1;	  /* Error */
+      }
+      *bufp = 0;
+      return n-1;
+  }
+  ```
+
+* `rio_read`函数是核心函数，它带有缓冲
+  * 缓冲区：`rp->rio_cnt`处理不足值
+  * 并且错误返回与原本的`read`函数保持一致
+
+### 10.6 读取文件元数据
+
+* `stat`函数
+
+* `fstat`函数
+
+* 头文件:
+
+  ```c
+  #include <unistd.h>
+  #include <sys/stat.h>
+  ```
+
+* 
 
