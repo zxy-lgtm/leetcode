@@ -1,4 +1,4 @@
-package leetcode
+package exercise
 
 //Definition for singly-linked list.
 type ListNode struct {
@@ -7,7 +7,7 @@ type ListNode struct {
 }
 
 //算长度然后取中间值
-func middleNode(head *ListNode) *ListNode {
+func middleNode1(head *ListNode) *ListNode {
 	var lenth func(*ListNode) int
 	lenth = func(head *ListNode) int {
 		len := 0
@@ -52,4 +52,14 @@ func middleNode_(head *ListNode) *ListNode {
 	}
 
 	return late
+}
+
+func middleNode(head *ListNode) *ListNode {
+	low := head
+	fast := head
+	for fast != nil && fast.Next != nil {
+		low = low.Next
+		fast = fast.Next.Next
+	}
+	return low
 }

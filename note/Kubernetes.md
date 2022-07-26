@@ -186,4 +186,100 @@ spec		-必需字段，期望状态......
 #### API 
 
 * LIST 、 WATCH 过滤
-* 
+
+  * 同样有基于等值和集合
+  * 写法也相同
+
+* 设置引用
+
+  *  [`services`](https://kubernetes.io/zh/docs/concepts/services-networking/service/) 和 [`replicationcontrollers`](https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicationcontroller/)、[`pods`](https://kubernetes.io/zh/docs/concepts/workloads/pods/)
+  * 对象的标签在文件中都是使用映射定义，只基于等值需求
+
+* 支持基于集合需求的资源
+
+  *  [`Job`](https://kubernetes.io/zh/docs/concepts/workloads/controllers/job/)、 [`Deployment`](https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/)、 [`Replica Set`](https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicaset/) 和 [`DaemonSet`](https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/)
+
+  * 一个例子：
+
+    ```
+    selector:
+      matchLabels:
+        component: redis
+      matchExpressions:
+        - {key: tier, operator: In, values: [cache]}
+        - {key: environment, operator: NotIn, values: [dev]}
+    ```
+
+  *  有效的运算符包括 `In`、`NotIn`、`Exists` 和 `DoesNotExist`。
+
+### 注解（Annotations）
+
+* 为对象附加元数据
+  * 键值对
+  * **Note:**Map 中的键和值必须是字符串。 换句话说，你不能使用数字、布尔值、列表或其他类型的键或值。
+* 可以由注解来记录的一些例子
+  * 声明性配置所管理的字段
+  * 构建、发布或着镜像信息
+  * 日志记录、监控、分析或者审计仓库的指针
+  * 调试目的的客户端或者工具信息
+  * 指令
+  * 一些工具的数据信息
+
+### Finalizers
+
+* 带有namespace的键
+* 提醒控制器清理被删除的对象拥有的资源
+* 可用于垃圾回收
+* 工作原理
+  * 在 `metadata.finalizers`中定义值
+  * 在删除资源是，服务器会注意到该字段的值
+    * 将你开始执行删除的时间添加到 `metadata.deletionTimestamp` 字段。
+    * 在`metadata.finalizers`为空之前禁止删除
+    * 返回202状态码
+    * 控制器会在满足finalier之后删除此键
+    * `metadata.finalizers`为空时自动删除deletiontimestamp字段
+* Tips:避免手动移除finalizer
+
+### 字段选择器
+
+* 根据字段筛选出对应的Pod
+* 支持字段
+  * name
+  * namespace
+  * 其他随着资源类型不同而变化
+* 支持操作符：`=`、`==` 和 `!=` （`=` 和 `==` 的意义是相同的）
+* 链式选择器，用`，`分隔
+* 跨资源类型选择
+
+### [常用标签与例子](https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/common-labels/)
+
+## 架构
+
+### 节点（Node）
+
+* Kubernetes 通过将容器放入在节点（Node）上运行的 Pod 中来执行工作负载。
+* 由控制面管理
+
+### RuntimeClass
+
+* 运行多容器运行时还需要解决以下几个问题：
+  - 集群里有哪些可用的容器运行时？
+  - 如何为 Pod 选择合适的容器运行时？
+  - 如何让 Pod 调度到装有指定容器运行时的节点上？
+  - 容器运行时在运行容器时会产生有一些业务运行以外的额外开销，这种「额外开销」需要怎么统计？
+* 为了解决这些问题推出了RuntimeClass
+* 使用
+  1. 配置RuntimeClass
+  2. 在Pod spec中指定runtimeClassName来使用
+  3. 如果未指定则使用默认的RuntimeHandler
+* CRI配置（ Container Runtime Interface）
+  * 实现了运行时和 Kubernetes 的解耦
+  * cintainerd  在`/etc/containerd/config.toml` 配置文件来配置，handler 需要配置在 runtimes 块中
+  * cri-o  在`/etc/crio/crio.conf` 配置文件来配置， handler 需要配置在 crio.runtime 表下面
+* 调度 
+  * scheduling字段，需要设置挑选器，运行时取交集
+  * 阻止某些需要特定 RuntimeClass 的 pod，可以在 `tolerations` 中指定
+* 回调
+  * PostStart
+  * PreStop
+

@@ -1,4 +1,4 @@
-package leetcode
+package exercise
 
 type ListNode struct {
 	Val  int
@@ -30,4 +30,14 @@ func reverseList_(head *ListNode) *ListNode {
 	head.Next.Next = head
 	head.Next = nil
 	return last
+}
+
+func reverseList__(head *ListNode) *ListNode {
+	res := &ListNode{0, nil}
+	for head != nil {
+		tmp := &ListNode{head.Val, res.Next}
+		res.Next = tmp
+		head = head.Next
+	}
+	return res.Next
 }
